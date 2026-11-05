@@ -30,7 +30,6 @@ export function PageHeader() {
         <a className={`${pill} hover:text-text`} href="https://www.info-financiere.gouv.fr" target="_blank" rel="noreferrer">
           info-financiere.gouv.fr ↗
         </a>
-        <span className={pill}>Français uniquement</span>
         <Suspense fallback={null}>
           <CoveredPeriod />
         </Suspense>
