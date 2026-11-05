@@ -105,6 +105,9 @@ INSUFFISANT: <reason, in French>
 - Ajouter un profil personnalisable et des fonctionnalités comme liker, mettre en favori ou partager facilement une publication.
 - Ajouter un chatbot qui permet de poser des questions sur une publication précise.
 - Ajouter une voix de synthèse avec l'IA.
+- Mettre en place un cron qui récupère les nouvelles publications tous les jours (import, sélection et génération des brèves automatiques), au lieu de données figées.
+- Étendre à d'autres registres officiels (BODACC, Journal officiel, BOAMP…), comme le fait Clardot.
+- Créer un backend complet (API dédiée, file de traitement pour les PDF et la génération) plutôt que des scripts lancés en local.
 
 ## 8. Temps passé
 
