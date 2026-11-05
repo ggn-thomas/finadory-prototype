@@ -30,12 +30,12 @@ function parseFilters(params: SearchParams): Filters {
   };
 }
 
-// True on the unfiltered first page, the only place where "À la une" is shown.
+// True on the unfiltered first page, the only place where the "Brief" section is shown.
 function isFrontPage(filters: Filters): boolean {
   return !filters.company && !filters.type && !filters.subtype && !filters.from && !filters.to && filters.page === 1;
 }
 
-// Request-time part of the page: "À la une" (front page only), then "Le fil" with filters, grid and pagination.
+// Request-time part of the page: "Brief" (front page only), then "Le fil" with filters, grid and pagination.
 async function PublicationsSection({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const filters = parseFilters(await searchParams);
   const [options, { rows, total }] = await Promise.all([getFilterOptions(), getPublications(filters)]);
@@ -55,7 +55,7 @@ async function PublicationsSection({ searchParams }: { searchParams: Promise<Sea
   );
 }
 
-// Single page: header, "À la une" and "Le fil".
+// Home page: header, "Brief" and "Le fil".
 export default function Home(props: PageProps<"/">) {
   return (
     <>
