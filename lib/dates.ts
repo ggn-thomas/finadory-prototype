@@ -40,6 +40,12 @@ export function nextDay(day: string): string {
   return date.toISOString().slice(0, 10);
 }
 
+// Returns the Paris calendar day (YYYY-MM-DD) of a UTC timestamp, as used by date inputs.
+export function parisDay(iso: string): string {
+  const parts = Object.fromEntries(parisParts.formatToParts(new Date(iso)).map((p) => [p.type, p.value]));
+  return `${parts.year}-${parts.month}-${parts.day}`;
+}
+
 // Formats a UTC timestamp as a short French date and time in Paris time.
 export function formatParis(iso: string): string {
   return displayFormat.format(new Date(iso));

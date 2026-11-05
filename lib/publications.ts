@@ -1,4 +1,4 @@
-import { nextDay, parisDayStartUtc } from "./dates";
+import { nextDay, parisDay, parisDayStartUtc } from "./dates";
 import { getSupabase } from "./supabase";
 import type { PublicationRow } from "./types";
 
@@ -22,17 +22,20 @@ export type FilterOptions = {
   companies: string[];
   types: string[];
   subtypes: string[];
+  period: { from: string; to: string } | null;
 };
 
-// Builds the dropdown options from the distinct values present in the table.
+// Builds the dropdown options and the covered date range (Paris days) from the table.
 export async function getFilterOptions(): Promise<FilterOptions> {
   const { data, error } = await getSupabase()
     .from("publications")
-    .select("company_name, type, subtype")
+    .select("company_name, type, subtype, published_at")
     .limit(5000);
   if (error) throw new Error(`Failed to load filter options: ${error.message}`);
   const distinct = (values: string[]) => [...new Set(values)].sort((a, b) => a.localeCompare(b, "fr"));
+  const dates = data.map((row) => row.published_at as string).sort();
   return {
+    period: dates.length ? { from: parisDay(dates[0]), to: parisDay(dates[dates.length - 1]) } : null,
     companies: distinct(data.map((row) => row.company_name)),
     types: distinct(data.map((row) => row.type)),
     subtypes: distinct(data.map((row) => row.subtype)),

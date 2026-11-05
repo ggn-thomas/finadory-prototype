@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatParis, nextDay, parisDayStartUtc } from "./dates";
+import { formatParis, nextDay, parisDay, parisDayStartUtc } from "./dates";
 
 describe("parisDayStartUtc", () => {
   it("uses UTC+2 before the October DST change", () => {
@@ -24,5 +24,12 @@ describe("nextDay", () => {
 describe("formatParis", () => {
   it("displays a UTC timestamp in Paris time", () => {
     expect(formatParis("2026-11-05T06:58:00+00:00")).toContain("07:58");
+  });
+});
+
+describe("parisDay", () => {
+  it("returns the Paris calendar day of a UTC timestamp, including late-evening UTC", () => {
+    expect(parisDay("2026-11-05T06:58:00+00:00")).toBe("2026-11-05");
+    expect(parisDay("2026-10-29T23:30:00+00:00")).toBe("2026-10-30");
   });
 });

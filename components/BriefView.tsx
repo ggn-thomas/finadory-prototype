@@ -72,12 +72,6 @@ export function BriefView({ brief }: { brief: Brief }) {
           ))}
         </ul>
       </section>
-      <div style={stagger(4)} className="animate-fade-up mt-6 flex flex-wrap items-center gap-1.5">
-        <span className="text-xs text-muted">Retenue parce que :</span>
-        {brief.publication.score_reasons.map((reason) => (
-          <span key={reason} className={chip}>{reason}</span>
-        ))}
-      </div>
       {!lengthOk && (
         <p className="mt-4 text-xs text-muted">
           ⚠ Longueur : {brief.word_count} mots (consigne : {MIN_WORDS} à {MAX_WORDS}).
