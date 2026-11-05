@@ -72,7 +72,7 @@ function DateField({ name, label, value }: { name: string; label: string; value?
 // Plain GET form on a single row: filters live in the URL and are applied server-side.
 export function PublicationFilters({ options, filters }: { options: FilterOptions; filters: Filters }) {
   return (
-    <form method="get" style={stagger(5)} className="animate-fade-up mt-8 flex flex-wrap items-center gap-2 lg:flex-nowrap">
+    <form method="get" style={stagger(7)} className="animate-fade-up flex flex-wrap items-center gap-2 lg:flex-nowrap">
       <CompanySearch value={filters.company} companies={options.companies} />
       <Select name="type" label="Tous les types" value={filters.type} options={options.types} />
       <Select name="subtype" label="Tous les sous-types" value={filters.subtype} options={options.subtypes} />

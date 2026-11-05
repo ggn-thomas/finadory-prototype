@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { stagger } from "@/lib/motion";
+import { SectionTitle } from "./SectionTitle";
 
 export type FeaturedItem = {
   id: string;
@@ -66,23 +68,26 @@ export function FeaturedCarousel({ items }: { items: FeaturedItem[] }) {
       onMouseLeave={() => setPaused(false)}
       onFocus={() => setPaused(true)}
       onBlur={() => setPaused(false)}
-      className="mt-8"
     >
-      <div className="mb-3 flex items-center justify-between">
-        <h2 className="font-serif text-xl">À la une</h2>
-        <div className="flex items-center gap-3">
-          <span className="text-xs text-muted">
-            {index + 1} / {items.length}
-          </span>
-          <button type="button" aria-label="Précédente" className={arrow} onClick={() => go(-1)}>
-            ←
-          </button>
-          <button type="button" aria-label="Suivante" className={arrow} onClick={() => go(1)}>
-            →
-          </button>
-        </div>
-      </div>
-      <div className="border border-line">
+      <SectionTitle
+        title="À la une"
+        subtitle="Les 5 publications qui sortent du lot, sélectionnées automatiquement."
+        style={stagger(4)}
+        actions={
+          <div className="flex items-center gap-3">
+            <span className="text-xs text-muted">
+              {index + 1} / {items.length}
+            </span>
+            <button type="button" aria-label="Précédente" className={arrow} onClick={() => go(-1)}>
+              ←
+            </button>
+            <button type="button" aria-label="Suivante" className={arrow} onClick={() => go(1)}>
+              →
+            </button>
+          </div>
+        }
+      />
+      <div style={stagger(5)} className="animate-fade-up border border-line">
         <Slide key={items[index].id} item={items[index]} />
       </div>
       <div className="mt-3 flex justify-center gap-2">
