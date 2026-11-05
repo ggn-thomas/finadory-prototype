@@ -44,3 +44,7 @@ next-env.d.ts
 /docs
 /.claude
 
+
+# agent instruction files (kept locally, not versioned)
+CLAUDE.md
+AGENTS.md
