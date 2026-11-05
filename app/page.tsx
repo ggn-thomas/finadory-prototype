@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { PageHeader } from "@/components/PageHeader";
 import { Pagination } from "@/components/Pagination";
 import { PublicationFilters } from "@/components/PublicationFilters";
-import { PublicationsTable } from "@/components/PublicationsTable";
+import { PublicationsGrid } from "@/components/PublicationsGrid";
 import { getFilterOptions, getPublications, type PublicationFilters as Filters } from "@/lib/publications";
 
 type SearchParams = Record<string, string | string[] | undefined>;
@@ -27,14 +27,14 @@ function parseFilters(params: SearchParams): Filters {
   };
 }
 
-// Request-time part of the page: filters, table and pagination.
+// Request-time part of the page: filters, grid and pagination.
 async function PublicationsSection({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const filters = parseFilters(await searchParams);
   const [options, { rows, total }] = await Promise.all([getFilterOptions(), getPublications(filters)]);
   return (
     <>
       <PublicationFilters options={options} filters={filters} />
-      <PublicationsTable rows={rows} />
+      <PublicationsGrid rows={rows} />
       <Pagination filters={filters} total={total} />
     </>
   );

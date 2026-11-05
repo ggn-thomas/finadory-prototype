@@ -2,7 +2,7 @@ import { nextDay, parisDayStartUtc } from "./dates";
 import { getSupabase } from "./supabase";
 import type { PublicationRow } from "./types";
 
-export const PAGE_SIZE = 50;
+export const PAGE_SIZE = 48;
 
 export type PublicationFilters = {
   company?: string;
@@ -15,11 +15,11 @@ export type PublicationFilters = {
 
 export type ListedPublication = Pick<
   PublicationRow,
-  "id" | "published_at" | "company_name" | "title" | "subtype" | "score" | "url" | "file_ext"
+  "id" | "published_at" | "company_name" | "title" | "subtype" | "url" | "file_ext"
 >;
 
 export type FilterOptions = {
-  companies: { key: string; name: string }[];
+  companies: string[];
   types: string[];
   subtypes: string[];
 };
@@ -28,23 +28,28 @@ export type FilterOptions = {
 export async function getFilterOptions(): Promise<FilterOptions> {
   const { data, error } = await getSupabase()
     .from("publications")
-    .select("company_key, company_name, type, subtype")
+    .select("company_name, type, subtype")
     .limit(5000);
   if (error) throw new Error(`Failed to load filter options: ${error.message}`);
-  const companies = new Map(data.map((row) => [row.company_key, row.company_name]));
+  const distinct = (values: string[]) => [...new Set(values)].sort((a, b) => a.localeCompare(b, "fr"));
   return {
-    companies: [...companies].map(([key, name]) => ({ key, name })).sort((a, b) => a.name.localeCompare(b.name, "fr")),
-    types: [...new Set(data.map((row) => row.type))].sort((a, b) => a.localeCompare(b, "fr")),
-    subtypes: [...new Set(data.map((row) => row.subtype))].sort((a, b) => a.localeCompare(b, "fr")),
+    companies: distinct(data.map((row) => row.company_name)),
+    types: distinct(data.map((row) => row.type)),
+    subtypes: distinct(data.map((row) => row.subtype)),
   };
+}
+
+// Escapes LIKE wildcards so a search for "100%" matches literally.
+function escapeLike(text: string): string {
+  return text.replace(/[\\%_]/g, (char) => `\\${char}`);
 }
 
 // Returns one page of publications matching the filters, newest first, with the total count.
 export async function getPublications(filters: PublicationFilters) {
   let query = getSupabase()
     .from("publications")
-    .select("id, published_at, company_name, title, subtype, score, url, file_ext", { count: "exact" });
-  if (filters.company) query = query.eq("company_key", filters.company);
+    .select("id, published_at, company_name, title, subtype, url, file_ext", { count: "exact" });
+  if (filters.company) query = query.ilike("company_name", `%${escapeLike(filters.company)}%`);
   if (filters.type) query = query.eq("type", filters.type);
   if (filters.subtype) query = query.eq("subtype", filters.subtype);
   if (filters.from) query = query.gte("published_at", parisDayStartUtc(filters.from));
