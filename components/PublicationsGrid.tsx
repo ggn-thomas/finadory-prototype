@@ -11,7 +11,7 @@ function PublicationCard({ publication, index }: { publication: ListedPublicatio
       href={publication.url}
       target="_blank"
       rel="noreferrer"
-      style={stagger(index, 360, 40)}
+      style={stagger(index, 480, 40)}
       className="animate-fade-up group flex flex-col border border-line transition-colors hover:border-muted"
     >
       <div className="flex aspect-[16/9] items-center justify-center bg-[#f7f7f5] px-6">

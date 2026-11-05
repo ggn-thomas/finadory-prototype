@@ -1,8 +1,11 @@
 import { Suspense } from "react";
+import { Featured } from "@/components/Featured";
 import { PageHeader } from "@/components/PageHeader";
 import { Pagination } from "@/components/Pagination";
 import { PublicationFilters } from "@/components/PublicationFilters";
 import { PublicationsGrid } from "@/components/PublicationsGrid";
+import { SectionTitle } from "@/components/SectionTitle";
+import { stagger } from "@/lib/motion";
 import { getFilterOptions, getPublications, type PublicationFilters as Filters } from "@/lib/publications";
 
 type SearchParams = Record<string, string | string[] | undefined>;
@@ -27,12 +30,24 @@ function parseFilters(params: SearchParams): Filters {
   };
 }
 
-// Request-time part of the page: filters, grid and pagination.
+// True on the unfiltered first page, the only place where "À la une" is shown.
+function isFrontPage(filters: Filters): boolean {
+  return !filters.company && !filters.type && !filters.subtype && !filters.from && !filters.to && filters.page === 1;
+}
+
+// Request-time part of the page: "À la une" (front page only), then "Le fil" with filters, grid and pagination.
 async function PublicationsSection({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const filters = parseFilters(await searchParams);
   const [options, { rows, total }] = await Promise.all([getFilterOptions(), getPublications(filters)]);
+  const frontPage = isFrontPage(filters);
   return (
     <>
+      {frontPage && <Featured />}
+      <SectionTitle
+        title="Le fil"
+        subtitle={`${total} publication${total > 1 ? "s" : ""} réglementée${total > 1 ? "s" : ""}, de la plus récente à la plus ancienne.`}
+        style={stagger(frontPage ? 6 : 4)}
+      />
       <PublicationFilters options={options} filters={filters} />
       <PublicationsGrid rows={rows} />
       <Pagination filters={filters} total={total} />
@@ -40,11 +55,11 @@ async function PublicationsSection({ searchParams }: { searchParams: Promise<Sea
   );
 }
 
-// Publications list page.
+// Single page: header, "À la une" and "Le fil".
 export default function Home(props: PageProps<"/">) {
   return (
     <>
-      <PageHeader active="publications" />
+      <PageHeader />
       <Suspense fallback={<p className="mt-10 text-muted">Chargement des publications…</p>}>
         <PublicationsSection searchParams={props.searchParams} />
       </Suspense>

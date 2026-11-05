@@ -1,13 +1,18 @@
 import { fetchFrenchPublications } from "@/lib/infofi";
 import { normalize } from "@/lib/normalize";
+import { score } from "@/lib/score";
 import { getSupabase } from "@/lib/supabase";
 
 const BATCH_SIZE = 100;
 
-// Imports the last 7 days of French publications into Supabase (idempotent upsert on id).
+// Imports and scores the last 7 days of French publications (idempotent upsert on id).
 async function main() {
   const records = await fetchFrenchPublications(7);
-  const rows = records.map((raw) => ({ ...normalize(raw), score: 0, score_reasons: [] }));
+  const rows = records.map((raw) => {
+    const row = normalize(raw);
+    const { score: points, reasons } = score(row);
+    return { ...row, score: points, score_reasons: reasons };
+  });
   const supabase = getSupabase();
   let upserted = 0;
   for (let i = 0; i < rows.length; i += BATCH_SIZE) {

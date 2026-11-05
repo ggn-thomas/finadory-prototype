@@ -96,6 +96,12 @@ Ne concerne **que les 3 à 5 brèves générées**, chacune comparée au PDF de 
 3. Statut par chiffre : ✅ nombre et citation trouvés · ⚠️ nombre trouvé mais citation absente ou format différent · ❌ introuvable. La brève prend le statut de son pire chiffre.
 - Limites : un nombre présent n'est pas forcément utilisé dans le bon contexte. Les années et trimestres sont à exclure ou tolérer. Les pages non lues produisent de faux ❌.
 
+## Pour le README : limites du score assumées (décision de Thomas)
+
+- Faux positif connu : Orange, « acquisition d'actions propres » (un rachat d'actions déposé comme info privilégiée) obtient 5 grâce au mot-clé « acquisition ». Pas de correctif au cas par cas.
+- Top 5 dominé par les résultats T3 du CAC 40 (9 ex aequo à 5, départagés par la date) : c'est voulu, car en saison de résultats, c'est ce qu'attendent les lecteurs.
+- L'API ne fournit aucun signal de popularité ou d'audience : le CAC 40 sert d'approximation.
+
 ## Pour le README : erreurs de l'IA déjà détectées
 
 1. Claude a utilisé un champ inventé (`order_by=-date_de_publication`) → l'API a renvoyé `Unknown field`.
