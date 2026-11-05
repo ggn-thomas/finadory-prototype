@@ -37,3 +37,9 @@ export type PublicationRow = {
 export type FigureStatus = "verified" | "to_check" | "unverified";
 
 export type BriefStatus = FigureStatus | "not_analyzable" | "error";
+
+export type Citation = { cited_text: string; start_page: number; end_page: number };
+
+export type Segment = { text: string; citations: Citation[] };
+
+export type CheckedFigure = { number: string; sentence: string; status: FigureStatus; page: number | null };

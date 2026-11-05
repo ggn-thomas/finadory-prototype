@@ -1,5 +1,4 @@
-import { formatParis } from "@/lib/dates";
-import { getCandidates, TOP_SIZE } from "@/lib/selection";
+import { getBriefs } from "@/lib/briefs";
 import { FeaturedCarousel, type FeaturedItem } from "./FeaturedCarousel";
 
 const CRITERIA = [
@@ -25,16 +24,12 @@ function Criteria() {
   );
 }
 
-// "À la une": top candidates loaded on the server, handed as plain items to the carousel.
+// "Brief" section: generated briefs loaded on the server, handed as plain items to the carousel.
 export async function Featured() {
-  const top = (await getCandidates()).slice(0, TOP_SIZE);
-  const items: FeaturedItem[] = top.map((candidate) => ({
-    id: candidate.id,
-    companyName: candidate.company_name,
-    title: candidate.title,
-    meta: `${formatParis(candidate.published_at)} · ${candidate.subtype}`,
-    reasons: candidate.score_reasons,
-    url: candidate.url,
+  const items: FeaturedItem[] = (await getBriefs()).map((brief) => ({
+    id: brief.publication_id,
+    companyName: brief.publication.company_name,
+    title: brief.title,
   }));
   return (
     <>

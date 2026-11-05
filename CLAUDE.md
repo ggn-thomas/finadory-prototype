@@ -107,3 +107,14 @@ Ne concerne **que les 3 à 5 brèves générées**, chacune comparée au PDF de 
 1. Claude a utilisé un champ inventé (`order_by=-date_de_publication`) → l'API a renvoyé `Unknown field`.
 2. Claude a conclu à tort qu'il n'y avait que 78 URLs distinctes sur 592 : son script tronquait les valeurs à 70 caractères avant de les compter. Il y en a en réalité 592, toutes uniques.
 3. Première clé de regroupement FR/EN « même minute » : elle ratait 43 paires décalées de 1 à 5 min.
+4. Longueur non respectée par le modèle : le corps de la brève Engie fait 182 mots, celui de Publicis 157 (consigne : 100 à 150). Signalé à l'affichage, non corrigé.
+5. Glissade éditoriale à surveiller : le titre « Bouygues relève son objectif » interprète « vise une légère hausse » comme un relèvement.
+6. Faux ❌ de NOTRE vérification (et non de l'IA) : dans les tableaux, l'extraction PDF colle les cellules (« 1 067,0892,3 », « 306675 »). Corrigé par une recherche en sous-chaîne pour les nombres de 3 chiffres ou plus, avec un test qui reproduit le cas Legrand.
+
+## Pour le README : génération et vérification (décisions)
+
+- Génération avec l'**API Citations** (idée de Thomas) : le PDF complet est passé en bloc `document`, et l'API rattache à chaque phrase un `cited_text` extrait du document (pas écrit par le modèle). Incompatible avec la sortie structurée, d'où un texte balisé (TITRE / CHAPÔ / CORPS / FAITS CLÉS) découpé par `parseBriefText`.
+- Vérification : un nombre est ✅ s'il figure dans le passage cité pour sa phrase, ⚠️ s'il n'est qu'ailleurs dans le PDF, ❌ s'il est absent. Années, T3/S1 et dates ignorées. Résultat : 5 brèves sur 5 vérifiées (104 chiffres).
+- Limite : pour un tableau, l'API cite toute la page (environ 1 270 caractères), donc le contrôle « dans le passage cité » est moins précis.
+- Premier lancement : 13 erreurs « credit balance too low » (crédits API absents sur la clé), relancé ensuite.
+- Modèle `claude-opus-5-5` (défaut du skill claude-api), effort `medium`, `fallbacks: "default"`.

@@ -32,6 +32,7 @@ create table if not exists briefs (
   body             text,
   key_facts        jsonb,
   figures          jsonb,
+  segments         jsonb,
   unlisted_numbers jsonb,
   status           text,
   reason           text,
