@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { Featured } from "@/components/Featured";
 import { PageHeader } from "@/components/PageHeader";
 import { Pagination } from "@/components/Pagination";
 import { PublicationFilters } from "@/components/PublicationFilters";
@@ -27,12 +28,18 @@ function parseFilters(params: SearchParams): Filters {
   };
 }
 
-// Request-time part of the page: filters, grid and pagination.
+// True on the unfiltered first page, the only place where "À la une" is shown.
+function isFrontPage(filters: Filters): boolean {
+  return !filters.company && !filters.type && !filters.subtype && !filters.from && !filters.to && filters.page === 1;
+}
+
+// Request-time part of the page: featured carousel, filters, grid and pagination.
 async function PublicationsSection({ searchParams }: { searchParams: Promise<SearchParams> }) {
   const filters = parseFilters(await searchParams);
   const [options, { rows, total }] = await Promise.all([getFilterOptions(), getPublications(filters)]);
   return (
     <>
+      {isFrontPage(filters) && <Featured />}
       <PublicationFilters options={options} filters={filters} />
       <PublicationsGrid rows={rows} />
       <Pagination filters={filters} total={total} />
