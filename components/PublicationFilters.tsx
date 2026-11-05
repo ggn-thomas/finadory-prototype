@@ -59,25 +59,28 @@ function CompanySearch({ value, companies }: { value?: string; companies: string
   );
 }
 
-// Date field with a visible label ("Début" / "Fin").
-function DateField({ name, label, value }: { name: string; label: string; value?: string }) {
+type DateFieldProps = { name: string; label: string; value?: string; min?: string; max?: string };
+
+// Date field with a visible label ("Début" / "Fin"), bounded to the imported period.
+function DateField({ name, label, value, min, max }: DateFieldProps) {
   return (
     <label className={`${field} flex items-center gap-2`}>
       <span className="text-muted">{label}</span>
-      <input type="date" name={name} defaultValue={value} className="bg-transparent outline-none" />
+      <input type="date" name={name} defaultValue={value} min={min} max={max} className="bg-transparent outline-none" />
     </label>
   );
 }
 
 // Plain GET form on a single row: filters live in the URL and are applied server-side.
 export function PublicationFilters({ options, filters }: { options: FilterOptions; filters: Filters }) {
+  const { period } = options;
   return (
     <form method="get" style={stagger(7)} className="animate-fade-up flex flex-wrap items-center gap-2 lg:flex-nowrap">
       <CompanySearch value={filters.company} companies={options.companies} />
       <Select name="type" label="Tous les types" value={filters.type} options={options.types} />
       <Select name="subtype" label="Tous les sous-types" value={filters.subtype} options={options.subtypes} />
-      <DateField name="from" label="Début" value={filters.from} />
-      <DateField name="to" label="Fin" value={filters.to} />
+      <DateField name="from" label="Début" value={filters.from ?? period?.from} min={period?.from} max={period?.to} />
+      <DateField name="to" label="Fin" value={filters.to ?? period?.to} min={period?.from} max={period?.to} />
       <button type="submit" className={`${action} bg-text font-medium text-bg hover:bg-white`}>
         Filtrer
       </button>
